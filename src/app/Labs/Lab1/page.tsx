@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function Lab1() {
   return (
     <div id="wd-lab1">
@@ -54,7 +56,7 @@ My favorite books (in no particular order)
 <ul id="wd-my-books">
   <li>Dune</li>
   <li>Lord of the Rings</li>
-  <li>Ender's Game</li>
+  <li>Ender Game</li>
   <li>Red Mars</li>
   <li>The Forever War</li>
 </ul>
@@ -150,11 +152,23 @@ Your favorite books (in no particular order)
       <div id="wd-images">
   <h4>Image tag</h4>
   Loading an image from the internet: <br />
-  <img id="wd-starship" width="400px"   src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg" />
+  <Image
+    id="wd-starship"
+    src="https://www.staradvertiser.com/wp-content/uploads/2021/08/web1_Starship-gap2.jpg"
+    alt="SpaceX Starship rocket"
+    width={400}
+    height={250}
+  />
   <br />
   Loading a local image:
   <br />
-  <img id="wd-teslabot" src="/images/teslabot.webp" height="200px" /></div>
+  <Image
+    id="wd-teslabot"
+    src="/images/teslabot.webp"
+    alt="Tesla Bot humanoid robot"
+    width={200}
+    height={300}
+  /></div>
 
   <div id="wd-forms">
   <h4>Form Elements</h4>
