@@ -22,7 +22,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/css.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 CSS JS </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -32,7 +32,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/javascript.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 Java script </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -42,7 +42,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/nextjs.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 Next JS </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -52,7 +52,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/typscript.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 TypeScript JS </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -62,7 +62,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/cpp.jpeg" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 C++ </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -82,7 +82,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/python.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 Express JS </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
@@ -92,7 +92,7 @@ export default function Dashboard() {
         <div className="wd-dashboard-course"> <Link href="/Courses/1234" className="wd-dashboard-course-link">
             <Image src="/images/typscript.png" width={200} height={150}  alt="React JS course cover"  />
             <div>
-              <h5> CS1234 React JS </h5>
+              <h5> CS1234 Typescript </h5>
               <p className="wd-dashboard-course-title">
                 Full Stack software developer
               </p>
