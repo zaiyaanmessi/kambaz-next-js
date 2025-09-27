@@ -282,7 +282,7 @@ Please
 to get dummy text<br/>
 <h4>My Github</h4>
 Please
-<a href="https://github.com/zaiyaanmessi" id="wd-github">click here</a>
+<a href="https://github.com/zaiyaanmessi/kambaz-next-js" id="wd-github">click here</a>
 to go to my Github<br/>
 
 
