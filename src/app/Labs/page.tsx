@@ -5,6 +5,8 @@ export default function Labs() {
      <h1>Labs</h1>
      <h4>Name: Zaiyaan Najam</h4>
      <h4>CS5610 19730 Web Development SEC 05</h4>
+     <a id="wd-github" href="https://github.com/zaiyaanmessi/kambaz-next-js" target="_blank"></a>
+
      <ul>
        <li>
          <Link href="/Labs/Lab1" id="wd-lab1-link">
