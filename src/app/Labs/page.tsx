@@ -3,7 +3,7 @@ export default function Labs() {
  return (
    <div id="wd-labs">
      <h1>Labs</h1>
-     <h4>Name: Zaiyaan Najam</h4>
+     <h4>Full Name: Zaiyaan Najam</h4>
      <h4>CS5610 19730 Web Development SEC 05</h4>
      <a id="wd-github" href="https://github.com/zaiyaanmessi/kambaz-next-js" target="_blank"></a>
 
