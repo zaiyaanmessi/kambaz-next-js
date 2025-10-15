@@ -1,3 +1,6 @@
+"use client";
+import { useParams } from "next/navigation";
+import * as db from "../../../Database";
 import Link from "next/link";
 import { BsGripVertical } from "react-icons/bs";
 import { MdOutlineAssignment } from "react-icons/md";
@@ -7,6 +10,9 @@ import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 
 export default function Assignments() {
+  const { cid } = useParams();
+  const assignments = db.assignments;
+
   return (
     <div id="wd-assignments" className="p-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -47,68 +53,40 @@ export default function Assignments() {
         </div>
 
         <ul className="list-group list-group-flush" id="wd-assignment-list">
-          <li className="list-group-item py-3 wd-assignment-list-item" style={{ borderLeft: "4px solid #28a745" }}>
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
-              <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/123" className="fw-bold text-dark text-decoration-none wd-assignment-link">
-                  A1 - ENV + HTML
-                </Link>
-                <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
-                  <span className="text-danger">Multiple Modules</span> | <span className="fw-normal">Not available until</span> May 6 at 12:00am |
-                  <br />
-                  <span className="fw-normal">Due</span> May 13 at 11:59pm | 100 pts
+          {assignments
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .filter((assignment: any) => assignment.course === cid)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            .map((assignment: any) => (
+              <li
+                key={assignment._id}
+                className="list-group-item py-3 wd-assignment-list-item"
+                style={{ borderLeft: "4px solid #28a745" }}
+              >
+                <div className="d-flex align-items-start">
+                  <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
+                  <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
+                  <div className="flex-grow-1">
+                    <Link
+                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                      className="fw-bold text-dark text-decoration-none wd-assignment-link"
+                    >
+                      {assignment.title}
+                    </Link>
+                    <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
+                      <span className="text-danger">Multiple Modules</span> |{" "}
+                      <span className="fw-normal">Not available until</span> May 6 at 12:00am |
+                      <br />
+                      <span className="fw-normal">Due</span> May 13 at 11:59pm | 100 pts
+                    </div>
+                  </div>
+                  <div className="d-flex align-items-start">
+                    <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
+                    <IoEllipsisVertical className="fs-5 mt-1" />
+                  </div>
                 </div>
-              </div>
-              <div className="d-flex align-items-start">
-                <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
-                <IoEllipsisVertical className="fs-5 mt-1" />
-              </div>
-            </div>
-          </li>
-
-          <li className="list-group-item py-3 wd-assignment-list-item" style={{ borderLeft: "4px solid #28a745" }}>
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
-              <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/123" className="fw-bold text-dark text-decoration-none wd-assignment-link">
-                  A2 - CSS + BOOTSTRAP
-                </Link>
-                <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
-                  <span className="text-danger">Multiple Modules</span> | <span className="fw-normal">Not available until</span> May 13 at 12:00am |
-                  <br />
-                  <span className="fw-normal">Due</span> May 20 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <div className="d-flex align-items-start">
-                <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
-                <IoEllipsisVertical className="fs-5 mt-1" />
-              </div>
-            </div>
-          </li>
-
-          <li className="list-group-item py-3 wd-assignment-list-item" style={{ borderLeft: "4px solid #28a745" }}>
-            <div className="d-flex align-items-start">
-              <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
-              <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
-              <div className="flex-grow-1">
-                <Link href="/Courses/1234/Assignments/123" className="fw-bold text-dark text-decoration-none wd-assignment-link">
-                  A3 - JAVASCRIPT + REACT
-                </Link>
-                <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
-                  <span className="text-danger">Multiple Modules</span> | <span className="fw-normal">Not available until</span> May 20 at 12:00am |
-                  <br />
-                  <span className="fw-normal">Due</span> May 27 at 11:59pm | 100 pts
-                </div>
-              </div>
-              <div className="d-flex align-items-start">
-                <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
-                <IoEllipsisVertical className="fs-5 mt-1" />
-              </div>
-            </div>
-          </li>
+              </li>
+            ))}
         </ul>
       </div>
     </div>

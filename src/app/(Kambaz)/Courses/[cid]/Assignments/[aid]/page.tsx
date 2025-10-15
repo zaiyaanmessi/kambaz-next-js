@@ -1,7 +1,14 @@
+"use client";
+import { useParams } from "next/navigation";
+import * as db from "../../../../Database";
 import Link from "next/link";
 import { Form, Button, Row, Col } from "react-bootstrap";
 
 export default function AssignmentEditor() {
+  const { cid, aid } = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const assignment = db.assignments.find((a: any) => a._id === aid);
+
   return (
     <div id="wd-assignments-editor" className="p-4">
       <Form>
@@ -10,7 +17,7 @@ export default function AssignmentEditor() {
           <Form.Control
             id="wd-name"
             type="text"
-            defaultValue="A1 - ENV + HTML"
+            defaultValue={assignment?.title || ""}
           />
         </div>
 
@@ -137,7 +144,8 @@ export default function AssignmentEditor() {
               </Form.Label>
               <Form.Control
                 id="wd-due-date"
-                type="date"
+                type="datetime-local"
+                defaultValue="2024-05-13T23:59"
                 className="mb-3"
               />
 
@@ -148,7 +156,8 @@ export default function AssignmentEditor() {
                   </Form.Label>
                   <Form.Control
                     id="wd-available-from"
-                    type="date"
+                    type="datetime-local"
+                    defaultValue="2024-05-06T00:00"
                   />
                 </Col>
 
@@ -158,7 +167,7 @@ export default function AssignmentEditor() {
                   </Form.Label>
                   <Form.Control
                     id="wd-available-until"
-                    type="date"
+                    type="datetime-local"
                   />
                 </Col>
               </Row>
@@ -169,12 +178,12 @@ export default function AssignmentEditor() {
         <hr />
 
         <div className="d-flex justify-content-end">
-          <Link href="/Courses/1234/Assignments">
+          <Link href={`/Courses/${cid}/Assignments`}>
             <Button variant="secondary" className="me-2" id="wd-cancel-btn">
               Cancel
             </Button>
           </Link>
-          <Link href="/Courses/1234/Assignments">
+          <Link href={`/Courses/${cid}/Assignments`}>
             <Button variant="danger" id="wd-save-btn">
               Save
             </Button>

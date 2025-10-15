@@ -1,23 +1,36 @@
+"use client";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
-export default function CourseNavigation() {
+
+export default function CourseNavigation({ cid }: { cid: string }) {
+  const pathname = usePathname();
+  const links = ["Home", "Modules", "Piazza", "Zoom", "Assignments", "Quizzes", "Grades", "People"];
+
+  const getLinkHref = (link: string) => {
+    if (link === "Piazza") return "https://piazza.com/";
+    if (link === "Zoom") return "https://www.zoom.com/";
+    if (link === "People") return `/Courses/${cid}/People/Table`;
+    return `/Courses/${cid}/${link}`;
+  };
+
   return (
     <div id="wd-courses-navigation" className="wd list-group fs-5 rounded-0">
-      <Link href="/Courses/1234/Home" id="wd-course-home-link"
-        className="list-group-item active border-0"> Home </Link><br />
-      <Link href="/Courses/1234/Modules" id="wd-course-modules-link"
-        className="list-group-item text-danger border-0"> Modules </Link><br />
-      <Link href="https://piazza.com/" id="wd-course-piazza-link"
-        className="list-group-item text-danger border-0"> Piazza </Link><br />
-      <Link href="https://www.zoom.com/" id="wd-course-zoom-link"
-        className="list-group-item text-danger border-0"> Zoom </Link><br />
-      <Link href="/Courses/1234/Assignments" id="wd-course-assignments-link"
-        className="list-group-item text-danger border-0"> Assignments </Link><br />
-      <Link href="/Courses/1234/Quizzes" id="wd-course-quizzes-link"
-        className="list-group-item text-danger border-0"> Quizzes </Link><br />
-         <Link href="/Courses/1234/Grades" id="wd-course-grades-link"
-        className="list-group-item text-danger border-0"> Grades </Link><br />
-      <Link href="/Courses/1234/People/Table" id="wd-course-people-link"
-        className="list-group-item text-danger border-0" > People </Link><br />
+      {links.map((link) => (
+        <div key={link}>
+          <Link
+            href={getLinkHref(link)}
+            id={`wd-course-${link.toLowerCase()}-link`}
+            className={`list-group-item border-0 ${
+              pathname.includes(link) 
+                ? "text-black border-start border-dark border-3" 
+                : "text-danger"
+            }`}
+          >
+            {link}
+          </Link>
+          <br />
+        </div>
+      ))}
     </div>
-);}
-
+  );
+}
