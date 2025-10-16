@@ -30,6 +30,7 @@ import Highlight from "./Highlight";
 import PathParameters from "./PathParameters";
 import TodoItem from "./Todos/TodoItem";
 import TodoList from "./Todos/TodoList";
+import ArrayIndexAndLength from "./ArrayIndexAndLength";
 
 export default function Lab3() {
   console.log('Hello World!');
@@ -48,6 +49,7 @@ export default function Lab3() {
       <ImpliedReturn />
       <TemplateLiterals />
       <SimpleArrays />
+      <ArrayIndexAndLength />
       <AddingAndRemovingToFromArrays />
       <ForLoops />
       <MapFunction />
