@@ -1,17 +1,43 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import * as db from "../../../Database";
 import Link from "next/link";
 import { BsGripVertical } from "react-icons/bs";
 import { MdOutlineAssignment } from "react-icons/md";
 import { IoEllipsisVertical } from "react-icons/io5";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaTrash } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteAssignment } from "./reducer";
+import { Modal, Button } from "react-bootstrap";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+
+  const handleDeleteClick = (assignment: any) => {
+    setAssignmentToDelete(assignment);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (assignmentToDelete) {
+      dispatch(deleteAssignment(assignmentToDelete._id));
+      setShowDeleteModal(false);
+      setAssignmentToDelete(null);
+    }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setAssignmentToDelete(null);
+  };
 
   return (
     <div id="wd-assignments" className="p-4">
@@ -31,9 +57,11 @@ export default function Assignments() {
           <button className="btn btn-secondary me-2" id="wd-group-add">
             <FaPlus className="me-1" /> Group
           </button>
-          <button className="btn btn-danger" id="wd-assignment-add">
-            <FaPlus className="me-1" /> Assignment
-          </button>
+          <Link href={`/Courses/${cid}/Assignments/new`}>
+            <button className="btn btn-danger" id="wd-assignment-add">
+              <FaPlus className="me-1" /> Assignment
+            </button>
+          </Link>
         </div>
       </div>
 
@@ -54,9 +82,7 @@ export default function Assignments() {
 
         <ul className="list-group list-group-flush" id="wd-assignment-list">
           {assignments
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .filter((assignment: any) => assignment.course === cid)
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .map((assignment: any) => (
               <li
                 key={assignment._id}
@@ -75,13 +101,22 @@ export default function Assignments() {
                     </Link>
                     <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
                       <span className="text-danger">Multiple Modules</span> |{" "}
-                      <span className="fw-normal">Not available until</span> May 6 at 12:00am |
+                      <span className="fw-normal">Not available until</span>{" "}
+                      {assignment.availableFromDate} |
                       <br />
-                      <span className="fw-normal">Due</span> May 13 at 11:59pm | 100 pts
+                      <span className="fw-normal">Due</span> {assignment.dueDate} |{" "}
+                      {assignment.points} pts
                     </div>
                   </div>
                   <div className="d-flex align-items-start">
                     <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
+                    <button
+                      onClick={() => handleDeleteClick(assignment)}
+                      className="btn btn-link text-danger p-0 me-2"
+                      title="Delete Assignment"
+                    >
+                      <FaTrash />
+                    </button>
                     <IoEllipsisVertical className="fs-5 mt-1" />
                   </div>
                 </div>
@@ -89,6 +124,24 @@ export default function Assignments() {
             ))}
         </ul>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={cancelDelete}>
+        <Modal.Header closeButton>
+          <Modal.Title>Delete Assignment</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to remove the assignment &quot;{assignmentToDelete?.title}&quot;?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDelete}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDelete}>
+            Yes, Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

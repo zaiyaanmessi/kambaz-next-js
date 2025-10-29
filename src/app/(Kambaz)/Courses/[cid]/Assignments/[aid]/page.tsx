@@ -1,13 +1,47 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useParams } from "next/navigation";
-import * as db from "../../../../Database";
-import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
+import { useSelector, useDispatch } from "react-redux";
+import { addAssignment, updateAssignment } from "../reducer";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const assignment = db.assignments.find((a: any) => a._id === aid);
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { assignments } = useSelector((state: any) => state.assignmentsReducer);
+  
+  const [assignment, setAssignment] = useState({
+    title: "",
+    description: "",
+    points: 100,
+    dueDate: "",
+    availableFromDate: "",
+    availableUntilDate: "",
+  });
+
+  useEffect(() => {
+    if (aid !== "new") {
+      const existingAssignment = assignments.find((a: any) => a._id === aid);
+      if (existingAssignment) {
+        setAssignment(existingAssignment);
+      }
+    }
+  }, [aid, assignments]);
+
+  const handleSave = () => {
+    if (aid === "new") {
+      dispatch(addAssignment({ ...assignment, course: cid }));
+    } else {
+      dispatch(updateAssignment({ ...assignment, _id: aid }));
+    }
+    router.push(`/Courses/${cid}/Assignments`);
+  };
+
+  const handleCancel = () => {
+    router.push(`/Courses/${cid}/Assignments`);
+  };
 
   return (
     <div id="wd-assignments-editor" className="p-4">
@@ -17,7 +51,8 @@ export default function AssignmentEditor() {
           <Form.Control
             id="wd-name"
             type="text"
-            defaultValue={assignment?.title || ""}
+            value={assignment.title}
+            onChange={(e) => setAssignment({ ...assignment, title: e.target.value })}
           />
         </div>
 
@@ -26,7 +61,8 @@ export default function AssignmentEditor() {
             as="textarea"
             rows={10}
             id="wd-description"
-            defaultValue="The assignment is available online Submit a link to the landing page of your Web application running on Netlify. The landing page should include the following: Your full name and section Links to each of the lab assignments Link to the Kanbas application Links to all relevant source code repositories The Kanbas application should include a link to navigate back to the landing page."
+            value={assignment.description}
+            onChange={(e) => setAssignment({ ...assignment, description: e.target.value })}
           />
         </div>
 
@@ -38,7 +74,8 @@ export default function AssignmentEditor() {
             <Form.Control
               id="wd-points"
               type="number"
-              defaultValue={100}
+              value={assignment.points}
+              onChange={(e) => setAssignment({ ...assignment, points: parseInt(e.target.value) })}
             />
           </Col>
         </Row>
@@ -144,8 +181,9 @@ export default function AssignmentEditor() {
               </Form.Label>
               <Form.Control
                 id="wd-due-date"
-                type="datetime-local"
-                defaultValue="2024-05-13T23:59"
+                type="date"
+                value={assignment.dueDate}
+                onChange={(e) => setAssignment({ ...assignment, dueDate: e.target.value })}
                 className="mb-3"
               />
 
@@ -156,8 +194,9 @@ export default function AssignmentEditor() {
                   </Form.Label>
                   <Form.Control
                     id="wd-available-from"
-                    type="datetime-local"
-                    defaultValue="2024-05-06T00:00"
+                    type="date"
+                    value={assignment.availableFromDate}
+                    onChange={(e) => setAssignment({ ...assignment, availableFromDate: e.target.value })}
                   />
                 </Col>
 
@@ -167,7 +206,9 @@ export default function AssignmentEditor() {
                   </Form.Label>
                   <Form.Control
                     id="wd-available-until"
-                    type="datetime-local"
+                    type="date"
+                    value={assignment.availableUntilDate}
+                    onChange={(e) => setAssignment({ ...assignment, availableUntilDate: e.target.value })}
                   />
                 </Col>
               </Row>
@@ -178,16 +219,12 @@ export default function AssignmentEditor() {
         <hr />
 
         <div className="d-flex justify-content-end">
-          <Link href={`/Courses/${cid}/Assignments`}>
-            <Button variant="secondary" className="me-2" id="wd-cancel-btn">
-              Cancel
-            </Button>
-          </Link>
-          <Link href={`/Courses/${cid}/Assignments`}>
-            <Button variant="danger" id="wd-save-btn">
-              Save
-            </Button>
-          </Link>
+          <Button variant="secondary" className="me-2" onClick={handleCancel} id="wd-cancel-btn">
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={handleSave} id="wd-save-btn">
+            Save
+          </Button>
         </div>
       </Form>
     </div>

@@ -1,29 +1,29 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
 
 export default function AccountNavigation() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
   const pathname = usePathname();
-  const links = [
-    { label: "Signin", path: "/Account/Signin" },
-    { label: "Signup", path: "/Account/Signup" },
-    { label: "Profile", path: "/Account/Profile" }
-  ];
+  
+  const links = currentUser ? ["Profile"] : ["Signin", "Signup"];
 
   return (
     <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
       {links.map((link) => (
-        <div key={link.label}>
+        <div key={link}>
           <Link
-            href={link.path}
-            id={`wd-account-${link.label.toLowerCase()}-link`}
+            href={`/Account/${link}`}
+            id={`wd-account-${link.toLowerCase()}-link`}
             className={`list-group-item border-0 ${
-              pathname.includes(link.label)
+              pathname.includes(link)
                 ? "text-black border-start border-dark border-3"
                 : "text-danger"
             }`}
           >
-            {link.label}
+            {link}
           </Link>
           <br />
         </div>

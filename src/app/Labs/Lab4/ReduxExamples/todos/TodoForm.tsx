@@ -1,0 +1,31 @@
+import { useSelector, useDispatch } from "react-redux";
+import { addTodo, updateTodo, setTodo } from "./todosReducer";
+import { ListGroupItem, Button, FormControl } from "react-bootstrap";
+import { RootState } from "../../store/page";
+
+export default function TodoForm() {
+  const { todo } = useSelector((state: RootState) => state.todosReducer);
+  const dispatch = useDispatch();
+
+  return (
+    <ListGroupItem>
+      <Button onClick={() => dispatch(addTodo(todo))} id="wd-add-todo-click">
+        Add
+      </Button>
+      <Button
+        onClick={() => dispatch(updateTodo(todo))}
+        id="wd-update-todo-click"
+        className="ms-2"
+      >
+        Update
+      </Button>
+      <FormControl
+        value={todo.title}
+        onChange={(e) =>
+          dispatch(setTodo({ ...todo, title: e.target.value }))
+        }
+        className="mt-2"
+      />
+    </ListGroupItem>
+  );
+}
