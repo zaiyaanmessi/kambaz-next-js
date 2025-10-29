@@ -12,22 +12,18 @@ export default function Profile() {
   const router = useRouter();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   
-  const fetchProfile = () => {
-    if (!currentUser) {
-      router.push("/Account/Signin");
-      return;
-    }
-    setProfile(currentUser);
-  };
-  
   const signout = () => {
     dispatch(setCurrentUser(null));
     router.push("/Account/Signin");
   };
   
   useEffect(() => {
-    fetchProfile();
-  }, [currentUser]);
+    if (!currentUser) {
+      router.push("/Account/Signin");
+      return;
+    }
+    setProfile(currentUser);
+  }, [currentUser, router]);
 
   return (
     <div id="wd-profile-screen" className="p-4" style={{ maxWidth: "500px" }}>

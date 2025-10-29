@@ -1,7 +1,7 @@
 "use client"; // Add this if you're using Next.js App Router
 
 import { useSelector } from "react-redux";
-import { RootState } from "../../store/page";
+import { RootState } from "../../store";
 
 export default function HelloRedux() {
   const { message } = useSelector((state: RootState) => state.helloReducer);

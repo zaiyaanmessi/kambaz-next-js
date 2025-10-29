@@ -4,7 +4,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { ListGroup, ListGroupItem } from "react-bootstrap";
-import { RootState } from "./store/page";
+import { RootState } from "./store";
 
 export default function ArrayStateVariable() {
   const [array, setArray] = useState([1, 2, 3, 4, 5]);
