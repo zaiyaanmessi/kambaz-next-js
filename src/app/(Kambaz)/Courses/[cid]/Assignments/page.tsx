@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { BsGripVertical } from "react-icons/bs";
@@ -10,8 +10,9 @@ import { FaCheckCircle, FaTrash } from "react-icons/fa";
 import { FaPlus } from "react-icons/fa6";
 import { CiSearch } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteAssignment } from "./reducer";
+import { deleteAssignment, setAssignments } from "./reducer";
 import { Modal, Button } from "react-bootstrap";
+import * as client from "./client";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -21,14 +22,25 @@ export default function Assignments() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
 
+  const fetchAssignments = async () => {
+    if (!cid || Array.isArray(cid)) return;
+    const assignments = await client.findAssignmentsForCourse(cid);
+    dispatch(setAssignments(assignments));
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid]);
+
   const handleDeleteClick = (assignment: any) => {
     setAssignmentToDelete(assignment);
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
     if (assignmentToDelete) {
-      dispatch(deleteAssignment(assignmentToDelete._id));
+      await client.deleteAssignment(assignmentToDelete._id);
+      dispatch(deleteAssignment(assignmentToDelete._id));  // ← Changed from deleteAssignmentAction
       setShowDeleteModal(false);
       setAssignmentToDelete(null);
     }
@@ -81,47 +93,45 @@ export default function Assignments() {
         </div>
 
         <ul className="list-group list-group-flush" id="wd-assignment-list">
-          {assignments
-            .filter((assignment: any) => assignment.course === cid)
-            .map((assignment: any) => (
-              <li
-                key={assignment._id}
-                className="list-group-item py-3 wd-assignment-list-item"
-                style={{ borderLeft: "4px solid #28a745" }}
-              >
-                <div className="d-flex align-items-start">
-                  <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
-                  <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
-                  <div className="flex-grow-1">
-                    <Link
-                      href={`/Courses/${cid}/Assignments/${assignment._id}`}
-                      className="fw-bold text-dark text-decoration-none wd-assignment-link"
-                    >
-                      {assignment.title}
-                    </Link>
-                    <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
-                      <span className="text-danger">Multiple Modules</span> |{" "}
-                      <span className="fw-normal">Not available until</span>{" "}
-                      {assignment.availableFromDate} |
-                      <br />
-                      <span className="fw-normal">Due</span> {assignment.dueDate} |{" "}
-                      {assignment.points} pts
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-start">
-                    <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
-                    <button
-                      onClick={() => handleDeleteClick(assignment)}
-                      className="btn btn-link text-danger p-0 me-2"
-                      title="Delete Assignment"
-                    >
-                      <FaTrash />
-                    </button>
-                    <IoEllipsisVertical className="fs-5 mt-1" />
+          {assignments.map((assignment: any) => (
+            <li
+              key={assignment._id}
+              className="list-group-item py-3 wd-assignment-list-item"
+              style={{ borderLeft: "4px solid #28a745" }}
+            >
+              <div className="d-flex align-items-start">
+                <BsGripVertical className="fs-5 me-2 text-muted mt-1" />
+                <MdOutlineAssignment className="fs-4 text-success me-3 mt-1" />
+                <div className="flex-grow-1">
+                  <Link
+                    href={`/Courses/${cid}/Assignments/${assignment._id}`}
+                    className="fw-bold text-dark text-decoration-none wd-assignment-link"
+                  >
+                    {assignment.title}
+                  </Link>
+                  <div className="mt-1" style={{ fontSize: "0.85rem", color: "#6c757d" }}>
+                    <span className="text-danger">Multiple Modules</span> |{" "}
+                    <span className="fw-normal">Not available until</span>{" "}
+                    {assignment.availableFromDate} |
+                    <br />
+                    <span className="fw-normal">Due</span> {assignment.dueDate} |{" "}
+                    {assignment.points} pts
                   </div>
                 </div>
-              </li>
-            ))}
+                <div className="d-flex align-items-start">
+                  <FaCheckCircle className="text-success fs-5 me-3 mt-1" />
+                  <button
+                    onClick={() => handleDeleteClick(assignment)}
+                    className="btn btn-link text-danger p-0 me-2"
+                    title="Delete Assignment"
+                  >
+                    <FaTrash />
+                  </button>
+                  <IoEllipsisVertical className="fs-5 mt-1" />
+                </div>
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
 

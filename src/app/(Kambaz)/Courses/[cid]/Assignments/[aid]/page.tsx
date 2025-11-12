@@ -4,7 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { addAssignment, updateAssignment } from "../reducer";
+import { setAssignments } from "../reducer";
+import * as client from "../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -30,11 +31,19 @@ export default function AssignmentEditor() {
     }
   }, [aid, assignments]);
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!cid || Array.isArray(cid)) return;
+    
     if (aid === "new") {
-      dispatch(addAssignment({ ...assignment, course: cid }));
+      // Create new assignment
+      const newAssignment = await client.createAssignment(cid, assignment);
+      dispatch(setAssignments([...assignments, newAssignment]));
     } else {
-      dispatch(updateAssignment({ ...assignment, _id: aid }));
+      // Update existing assignment
+      const updatedAssignment = await client.updateAssignment({ ...assignment, _id: aid });
+      dispatch(setAssignments(
+        assignments.map((a: any) => a._id === aid ? updatedAssignment : a)
+      ));
     }
     router.push(`/Courses/${cid}/Assignments`);
   };
