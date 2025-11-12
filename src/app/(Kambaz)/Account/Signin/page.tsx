@@ -15,6 +15,12 @@ export default function Signin() {
   const router = useRouter();
   
   const signin = async () => {
+    // Validation: Check if fields are empty
+    if (!credentials.username || !credentials.password) {
+      setError("Please enter both username and password.");
+      return;
+    }
+
     try {
       setError(""); // Clear any previous errors
       const user = await client.signin(credentials);
@@ -27,7 +33,7 @@ export default function Signin() {
     } catch (err: any) {
       // Handle error from server
       if (err.response && err.response.status === 401) {
-        setError("User does not exist. Please check your credentials or sign up.");
+        setError("Invalid username or password. Please try again.");
       } else if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
@@ -55,6 +61,7 @@ export default function Signin() {
           className="wd-username mb-2"
           id="wd-username"
           autoComplete="off"
+          required
         />
         <FormControl
           value={credentials.password}
@@ -64,6 +71,7 @@ export default function Signin() {
           className="wd-password mb-2"
           id="wd-password"
           autoComplete="new-password"
+          required
         />
         <Button 
           onClick={signin} 
