@@ -1,17 +1,26 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import { useState } from "react";
 import { useParams } from "next/navigation";
-import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import * as client from "../../../../Account/client";
+import PeopleDetails from "../Details";
+import Link from "next/link";
 import * as enrollmentsClient from "../../../../Account/enrollmentsClient";
 import { Table, Button, Modal, Form } from "react-bootstrap";
 import { FaUserCircle, FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 
-export default function PeopleTable() {
+export default function PeopleTable({ 
+  users = [], 
+  fetchUsers 
+}: { 
+  users?: any[]; 
+  fetchUsers: () => void; 
+}) {
+  const [showDetails, setShowDetails] = useState(false);
+  const [showUserId, setShowUserId] = useState<string | null>(null);
   const { cid } = useParams();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const [users, setUsers] = useState<any[]>([]);
-  const [enrolledUsers, setEnrolledUsers] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
   const [userForm, setUserForm] = useState({
@@ -26,39 +35,6 @@ export default function PeopleTable() {
     lastActivity: "",
     totalActivity: "",
   });
-
-  const fetchUsers = async () => {
-    try {
-      const allUsers = await client.findAllUsers();
-      setUsers(allUsers);
-    } catch (error) {
-      console.error("Error fetching users:", error);
-    }
-  };
-
-  const fetchEnrolledUsers = async () => {
-    if (!cid || Array.isArray(cid)) return;
-    try {
-      const enrollments = await enrollmentsClient.findEnrollmentsForCourse(cid);
-      const enrolledUserIds = enrollments.map((e: any) => e.user);
-      const enrolled = users.filter((user) =>
-        enrolledUserIds.includes(user._id)
-      );
-      setEnrolledUsers(enrolled);
-    } catch (error) {
-      console.error("Error fetching enrollments:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  useEffect(() => {
-    if (users.length > 0) {
-      fetchEnrolledUsers();
-    }
-  }, [users, cid]);
 
   const handleShowModal = (user?: any) => {
     if (user) {
@@ -100,7 +76,7 @@ export default function PeopleTable() {
         // Automatically enroll the new user in the current course
         await enrollmentsClient.enrollUserInCourse(newUser._id, cid as string);
       }
-      fetchUsers();
+      fetchUsers(); // Call the prop function to refresh users
       handleCloseModal();
     } catch (error) {
       console.error("Error saving user:", error);
@@ -111,7 +87,7 @@ export default function PeopleTable() {
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await client.deleteUser(userId);
-        fetchUsers();
+        fetchUsers(); // Call the prop function to refresh users
       } catch (error) {
         console.error("Error deleting user:", error);
       }
@@ -122,6 +98,15 @@ export default function PeopleTable() {
 
   return (
     <div id="wd-people-table">
+       {showDetails && (
+       <PeopleDetails
+         uid={showUserId}
+         onClose={() => {
+           setShowDetails(false);
+           fetchUsers();
+         }}/>
+     )}
+
       {isFaculty && (
         <div className="mb-3">
           <Button variant="success" onClick={() => handleShowModal()}>
@@ -144,12 +129,18 @@ export default function PeopleTable() {
           </tr>
         </thead>
         <tbody>
-          {enrolledUsers.map((user: any) => (
+          {users.map((user: any) => (
             <tr key={user._id}>
               <td className="wd-full-name text-nowrap">
+                  <span className="text-decoration-none"
+                 onClick={() => {
+                   setShowDetails(true);
+                   setShowUserId(user._id);
+                 }} >
                 <FaUserCircle className="me-2 fs-1 text-secondary" />
                 <span className="wd-first-name">{user.firstName}</span>{" "}
                 <span className="wd-last-name">{user.lastName}</span>
+                </span>
               </td>
               <td className="wd-login-id">{user.loginId}</td>
               <td className="wd-section">{user.section}</td>
