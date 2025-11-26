@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { setAssignments } from "../reducer";
-import * as client from "../client";
+import * as client from "../../../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -35,12 +35,10 @@ export default function AssignmentEditor() {
     if (!cid || Array.isArray(cid)) return;
     
     if (aid === "new") {
-      // Create new assignment
       const newAssignment = await client.createAssignment(cid, assignment);
       dispatch(setAssignments([...assignments, newAssignment]));
     } else {
-      // Update existing assignment
-      const updatedAssignment = await client.updateAssignment({ ...assignment, _id: aid });
+      const updatedAssignment = await client.updateAssignment(cid, { ...assignment, _id: aid });
       dispatch(setAssignments(
         assignments.map((a: any) => a._id === aid ? updatedAssignment : a)
       ));

@@ -12,7 +12,7 @@ import { CiSearch } from "react-icons/ci";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteAssignment, setAssignments } from "./reducer";
 import { Modal, Button } from "react-bootstrap";
-import * as client from "./client";
+import * as client from "../../client";
 
 export default function Assignments() {
   const { cid } = useParams();
@@ -38,9 +38,10 @@ export default function Assignments() {
   };
 
   const confirmDelete = async () => {
+    if (!cid || Array.isArray(cid)) return;
     if (assignmentToDelete) {
-      await client.deleteAssignment(assignmentToDelete._id);
-      dispatch(deleteAssignment(assignmentToDelete._id));  // ← Changed from deleteAssignmentAction
+      await client.deleteAssignment(cid, assignmentToDelete._id);
+      dispatch(deleteAssignment(assignmentToDelete._id));
       setShowDeleteModal(false);
       setAssignmentToDelete(null);
     }

@@ -68,15 +68,12 @@ export default function PeopleTable({
     
     try {
       if (editingUser) {
-        // Update existing user
         await client.updateUser({ ...userForm, _id: editingUser._id });
       } else {
-        // Create new user
         const newUser = await client.createUser(userForm);
-        // Automatically enroll the new user in the current course
         await enrollmentsClient.enrollUserInCourse(newUser._id, cid as string);
       }
-      fetchUsers(); // Call the prop function to refresh users
+      fetchUsers();
       handleCloseModal();
     } catch (error) {
       console.error("Error saving user:", error);
@@ -87,7 +84,7 @@ export default function PeopleTable({
     if (window.confirm("Are you sure you want to delete this user?")) {
       try {
         await client.deleteUser(userId);
-        fetchUsers(); // Call the prop function to refresh users
+        fetchUsers();
       } catch (error) {
         console.error("Error deleting user:", error);
       }
@@ -129,8 +126,8 @@ export default function PeopleTable({
           </tr>
         </thead>
         <tbody>
-          {users.map((user: any) => (
-            <tr key={user._id}>
+        {users.filter((user: any) => user != null).map((user: any, index: number) => (
+  <tr key={user._id || `user-${index}`}>
               <td className="wd-full-name text-nowrap">
                   <span className="text-decoration-none"
                  onClick={() => {
@@ -171,7 +168,6 @@ export default function PeopleTable({
         </tbody>
       </Table>
 
-      {/* User Edit/Create Modal */}
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{editingUser ? "Edit User" : "Add User"}</Modal.Title>
